@@ -6,10 +6,12 @@
 
 package net.nexustools.jgenui.examples;
 
-import net.nexustools.gui.SingleInput;
 import net.nexustools.event.ValueListener;
+import net.nexustools.gui.ComboBox;
+import net.nexustools.gui.SingleInput;
 import net.nexustools.gui.geom.Size;
 import net.nexustools.gui.layout.BoxLayout;
+import net.nexustools.gui.platform.PlatformUtils;
 import net.nexustools.gui.provider.swing.SwingBody;
 import net.nexustools.gui.provider.swing.SwingCheckBox;
 import net.nexustools.gui.provider.swing.SwingComboBox;
@@ -131,21 +133,10 @@ public class SwingThemeTester extends SwingBody {
         toggleButton.setSelected(true);
         toggleButton.setEnabled(false);
         column.add(toggleButton);
-        comboBox = new SwingComboBox(platform().LAFs());
-        comboBox.setTemplate("LAF: ####");
-        comboBox.addValueListener(new ValueListener<String, SingleInput<String>>() {
-            @Override
-            public void valueChanged(ValueListener.ValueEvent<String, SingleInput<String>> event) {
-                platform().setLAF(event.value);
-            }
-        });
-        comboBox.setValue(platform().LAF());
-        column.add(comboBox);
-        comboBox = new SwingComboBox(platform().LAFs());
-        comboBox.setTemplate("LAF: ####");
-        comboBox.setValue(platform().LAF());
-        comboBox.setEnabled(false);
-        column.add(comboBox);
+        column.add(PlatformUtils.createLAFController(platform()));
+        ComboBox cmboBox = PlatformUtils.createLAFController(platform());
+        cmboBox.setEnabled(false);
+        column.add(cmboBox);
         columns.add(column);
         // End Second Column
         

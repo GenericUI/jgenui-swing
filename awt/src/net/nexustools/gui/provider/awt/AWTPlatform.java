@@ -16,6 +16,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.ListIterator;
+import javax.swing.UIManager;
 import net.nexustools.concurrent.BaseAccessor;
 import net.nexustools.concurrent.BaseReader;
 import net.nexustools.concurrent.BaseWriter;
@@ -24,15 +25,17 @@ import net.nexustools.gui.Base;
 import net.nexustools.gui.Body;
 import net.nexustools.gui.Button;
 import net.nexustools.gui.CheckBox;
+import net.nexustools.gui.ComboBox;
 import net.nexustools.gui.Container;
 import net.nexustools.gui.Label;
 import net.nexustools.gui.Widget;
 import net.nexustools.gui.geom.Size;
 import net.nexustools.gui.platform.Platform;
 import net.nexustools.gui.platform.PlatformException;
-import net.nexustools.gui.platform.RenderTargetSupportedException;
+import net.nexustools.gui.platform.RenderTargetNotSupportedException;
 import net.nexustools.gui.provider.awt.impl.AWTWidgetImpl;
 import net.nexustools.gui.render.Font;
+import net.nexustools.gui.render.StyleSheet;
 import net.nexustools.io.format.StreamReader;
 
 /**
@@ -126,7 +129,7 @@ public class AWTPlatform extends Platform<java.awt.Component> {
     }
 
     @Override
-    public Base create(Class<? extends Base> type) throws RenderTargetSupportedException {
+    public Base create(Class<? extends Base> type) throws RenderTargetNotSupportedException {
         if(Container.class.isAssignableFrom(type))
             return new AWTContainer(this);
         else if(Label.class.isAssignableFrom(type))
@@ -135,10 +138,12 @@ public class AWTPlatform extends Platform<java.awt.Component> {
             return new AWTButton(this);
         else if(CheckBox.class.isAssignableFrom(type))
             return new AWTCheckBox(this);
+        else if(ComboBox.class.isAssignableFrom(type))
+            return new AWTComboBox(this);
         else if(Body.class.isAssignableFrom(type))
             return new AWTBody(this);
         
-        throw new RenderTargetSupportedException();
+        throw new RenderTargetNotSupportedException();
     }
 
     @Override
@@ -159,12 +164,20 @@ public class AWTPlatform extends Platform<java.awt.Component> {
 
     @Override
     public String[] LAFs() {
-        return new String[]{"AWT", "Blank"};
+        String[] cssLAFs = cssLAFs();
+        String[] styles = new String[cssLAFs.length+1];
+        styles[0] = "AWT";
+        for(int i=0; i<cssLAFs.length; i++)
+            styles[1+i] = cssLAFs[i];
+        return styles;
     }
     
     @Override
     public void setLAF(final String laf) {
-        // TODO: Implement Blank
+        if(laf.equals("AWT"))
+            setStyleSheet(null);
+        else
+            setStyleSheet(lafStyleSheet(laf));
     }
 
     @Override
@@ -253,6 +266,14 @@ public class AWTPlatform extends Platform<java.awt.Component> {
             ex.printStackTrace();
         }
         return swingReader.value;
+    }
+
+    public StyleSheet styleSheet() {
+        return null;
+    }
+
+    public void setStyleSheet(StyleSheet styleSheet) {
+        // TODO: Implement
     }
     
 }

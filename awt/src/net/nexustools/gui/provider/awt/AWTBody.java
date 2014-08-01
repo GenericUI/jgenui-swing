@@ -158,12 +158,12 @@ public class AWTBody extends ContainerImpl<Frame> implements Body {
     }
     
     @Override
-    public StyleSheet stylesheet() {
+    public StyleSheet styleSheet() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void setStylesheet(StyleSheet styleSheet) {
+    public void setStyleSheet(StyleSheet styleSheet) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

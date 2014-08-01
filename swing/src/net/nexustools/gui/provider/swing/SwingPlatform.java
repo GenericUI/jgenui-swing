@@ -15,13 +15,14 @@ import net.nexustools.gui.Base;
 import net.nexustools.gui.Body;
 import net.nexustools.gui.Button;
 import net.nexustools.gui.CheckBox;
+import net.nexustools.gui.ComboBox;
 import net.nexustools.gui.Container;
 import net.nexustools.gui.Frame;
 import net.nexustools.gui.Label;
 import net.nexustools.gui.RadioButton;
 import net.nexustools.gui.ToggleButton;
 import net.nexustools.gui.platform.Platform;
-import net.nexustools.gui.platform.RenderTargetSupportedException;
+import net.nexustools.gui.platform.RenderTargetNotSupportedException;
 import net.nexustools.gui.provider.awt.AWTPlatform;
 
 /**
@@ -39,6 +40,10 @@ public class SwingPlatform extends AWTPlatform {
     
     public SwingPlatform() {
         super("swing");
+        setSystemLAF();
+    }
+    
+    protected static void setSystemLAF() {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (ClassNotFoundException ex) {
@@ -48,7 +53,7 @@ public class SwingPlatform extends AWTPlatform {
     }
 
     @Override
-    public Base create(Class<? extends Base> type) throws RenderTargetSupportedException {
+    public Base create(Class<? extends Base> type) throws RenderTargetNotSupportedException {
         if(Container.class.isAssignableFrom(type))
             return new SwingContainer(this);
         else if(Label.class.isAssignableFrom(type))
@@ -61,6 +66,8 @@ public class SwingPlatform extends AWTPlatform {
             return new SwingCheckBox(this);
         else if(RadioButton.class.isAssignableFrom(type))
             return new SwingRadioButton(this);
+        else if(ComboBox.class.isAssignableFrom(type))
+            return new SwingComboBox(this);
         else if(Frame.class.isAssignableFrom(type))
             return new SwingFrame(this);
         else if(Body.class.isAssignableFrom(type))
@@ -71,12 +78,14 @@ public class SwingPlatform extends AWTPlatform {
 
     @Override
     public String[] LAFs() {
+        String[] cssLAFs = cssLAFs();
         UIManager.LookAndFeelInfo[] lookAndFeels = UIManager.getInstalledLookAndFeels();
-        String[] styles = new String[lookAndFeels.length+1];
+        String[] styles = new String[lookAndFeels.length+cssLAFs.length];
         for(int i=0; i<lookAndFeels.length; i++) {
             styles[i] = lookAndFeels[i].getName();
         }
-        styles[lookAndFeels.length] = "Blank";
+        for(int i=0; i<cssLAFs.length; i++)
+            styles[lookAndFeels.length+i] = cssLAFs[i];
         return styles;
     }
     
@@ -97,8 +106,11 @@ public class SwingPlatform extends AWTPlatform {
                                 break;
                             } catch (ClassNotFoundException ex) {} catch (InstantiationException ex) {} catch (IllegalAccessException ex) {} catch (UnsupportedLookAndFeelException ex) {}
                     }
-                    if(!foundLAF)
-                        return;
+                    if(!foundLAF) {
+                        setSystemLAF();
+                        SwingPlatform.super.setLAF(laf);
+                    } else
+                        setStyleSheet(null);
                     
                     for(Window window : Window.getWindows()) {
                         SwingUtilities.updateComponentTreeUI(window);

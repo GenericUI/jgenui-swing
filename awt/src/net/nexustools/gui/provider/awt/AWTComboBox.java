@@ -26,6 +26,9 @@ import net.nexustools.gui.provider.awt.impl.PropDispatcher;
 public class AWTComboBox<I> extends AWTWidgetImpl<Choice> implements ComboBox<I> {
 
     private I[] options;
+    AWTComboBox(AWTPlatform awtPlatform) {
+        super(awtPlatform);
+    }
     public AWTComboBox() {
         super(AWTPlatform.instance());
     }

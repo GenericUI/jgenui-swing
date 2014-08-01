@@ -30,6 +30,9 @@ import net.nexustools.gui.provider.awt.impl.AWTWidgetImpl;
 public class SwingComboBox<I> extends AWTWidgetImpl<JComboBox> implements ComboBox<I> {
 
     private I[] options;
+    SwingComboBox(SwingPlatform swingPlatform) {
+        super(swingPlatform);
+    }
     public SwingComboBox() {
         super(AWTPlatform.instance());
     }
