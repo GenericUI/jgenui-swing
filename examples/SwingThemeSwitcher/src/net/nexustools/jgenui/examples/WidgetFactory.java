@@ -28,15 +28,15 @@ import net.nexustools.gui.provider.swing.SwingToggleButton;
  *
  * @author katelyn
  */
-public class SwingThemeTester extends SwingBody {
+public class WidgetFactory extends SwingBody {
     
     public static final String[] stargateNames = new String[]{"Teal'c", "Daniel", "Jack", "Samantha"};
     
     public static void main(String[] args) {
-        (new SwingThemeTester()).show();
+        (new WidgetFactory()).show();
     }
 
-    public SwingThemeTester() {
+    public WidgetFactory() {
         super("Swing Theme Tester");
         setLayout(BoxLayout.Vertical);
         
