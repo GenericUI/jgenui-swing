@@ -8,17 +8,12 @@ package net.nexustools.gui.provider.swing;
 
 import java.awt.Window;
 import java.lang.reflect.InvocationTargetException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import net.nexustools.concurrent.IfWriteReader;
-import net.nexustools.concurrent.IfWriter;
 import net.nexustools.concurrent.Prop;
 import net.nexustools.concurrent.PropAccessor;
-import net.nexustools.concurrent.WriteReader;
-import net.nexustools.gui.Base;
 import net.nexustools.gui.Body;
 import net.nexustools.gui.Button;
 import net.nexustools.gui.CheckBox;
@@ -26,11 +21,12 @@ import net.nexustools.gui.ComboBox;
 import net.nexustools.gui.Container;
 import net.nexustools.gui.Frame;
 import net.nexustools.gui.Label;
+import net.nexustools.gui.MultiList;
 import net.nexustools.gui.RadioButton;
 import net.nexustools.gui.ToggleButton;
 import net.nexustools.gui.platform.Platform;
-import net.nexustools.gui.platform.RenderTargetNotSupportedException;
 import net.nexustools.gui.provider.awt.AWTPlatform;
+import net.nexustools.utils.Creator;
 
 /**
  *
@@ -62,27 +58,63 @@ public class SwingPlatform extends AWTPlatform {
     }
 
     @Override
-    public Base create(Class<? extends Base> type) throws RenderTargetNotSupportedException {
-        if(Container.class.isAssignableFrom(type))
-            return new SwingContainer(this);
-        else if(Label.class.isAssignableFrom(type))
-            return new SwingLabel(this);
-        else if(Button.class.isAssignableFrom(type))
-            return new SwingButton(this);
-        else if(ToggleButton.class.isAssignableFrom(type))
-            return new SwingToggleButton(this);
-        else if(CheckBox.class.isAssignableFrom(type))
-            return new SwingCheckBox(this);
-        else if(RadioButton.class.isAssignableFrom(type))
-            return new SwingRadioButton(this);
-        else if(ComboBox.class.isAssignableFrom(type))
-            return new SwingComboBox(this);
-        else if(Frame.class.isAssignableFrom(type))
-            return new SwingFrame(this);
-        else if(Body.class.isAssignableFrom(type))
-            return new SwingBody(this);
+    protected void populate(Population population) {
+        super.populate(population); // Inherit AWT
         
-        return super.create(type);
+        population.add(Label.class, new Creator<Label>() {
+            public Label create() {
+                return new SwingLabel(SwingPlatform.this);
+            }
+        });
+        
+        population.add(Button.class, new Creator<Button>() {
+            public Button create() {
+                return new SwingButton(SwingPlatform.this);
+            }
+        });
+        population.add(ToggleButton.class, new Creator<ToggleButton>() {
+            public ToggleButton create() {
+                return new SwingToggleButton(SwingPlatform.this);
+            }
+        });
+        
+        population.add(RadioButton.class, new Creator<RadioButton>() {
+            public RadioButton create() {
+                return new SwingRadioButton(SwingPlatform.this);
+            }
+        });
+        population.add(CheckBox.class, new Creator<CheckBox>() {
+            public CheckBox create() {
+                return new SwingCheckBox(SwingPlatform.this);
+            }
+        });
+        
+        population.add(ComboBox.class, new Creator<ComboBox>() {
+            public ComboBox create() {
+                return new SwingComboBox(SwingPlatform.this);
+            }
+        });
+        population.add(MultiList.class, new Creator<MultiList>() {
+            public MultiList create() {
+                return new SwingMultiList(SwingPlatform.this);
+            }
+        });
+        
+        population.add(Container.class, new Creator<Container>() {
+            public Container create() {
+                return new SwingContainer(SwingPlatform.this);
+            }
+        });
+        population.add(Frame.class, new Creator<Frame>() {
+            public Frame create() {
+                return new SwingFrame(SwingPlatform.this);
+            }
+        });
+        population.add(Body.class, new Creator<Body>() {
+            public Body create() {
+                return new SwingBody(SwingPlatform.this);
+            }
+        });
     }
 
     @Override

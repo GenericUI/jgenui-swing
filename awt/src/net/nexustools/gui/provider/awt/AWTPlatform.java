@@ -16,12 +16,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.ListIterator;
-import javax.swing.UIManager;
 import net.nexustools.concurrent.BaseAccessor;
 import net.nexustools.concurrent.BaseReader;
 import net.nexustools.concurrent.BaseWriter;
 import net.nexustools.concurrent.FakeLock;
-import net.nexustools.gui.Base;
 import net.nexustools.gui.Body;
 import net.nexustools.gui.Button;
 import net.nexustools.gui.CheckBox;
@@ -32,17 +30,17 @@ import net.nexustools.gui.Widget;
 import net.nexustools.gui.geom.Size;
 import net.nexustools.gui.platform.Platform;
 import net.nexustools.gui.platform.PlatformException;
-import net.nexustools.gui.platform.RenderTargetNotSupportedException;
 import net.nexustools.gui.provider.awt.impl.AWTWidgetImpl;
 import net.nexustools.gui.render.Font;
 import net.nexustools.gui.render.StyleSheet;
-import net.nexustools.io.format.StreamReader;
+import net.nexustools.gui.wrap.WrappedPlatform;
+import net.nexustools.utils.Creator;
 
 /**
  *
  * @author katelyn
  */
-public class AWTPlatform extends Platform<java.awt.Component> {
+public class AWTPlatform extends WrappedPlatform<java.awt.Component> {
     
     static abstract class RunnableReader<R> implements Runnable {
         public R value;
@@ -129,26 +127,39 @@ public class AWTPlatform extends Platform<java.awt.Component> {
     }
 
     @Override
-    public Base create(Class<? extends Base> type) throws RenderTargetNotSupportedException {
-        if(Container.class.isAssignableFrom(type))
-            return new AWTContainer(this);
-        else if(Label.class.isAssignableFrom(type))
-            return new AWTLabel(this);
-        else if(Button.class.isAssignableFrom(type))
-            return new AWTButton(this);
-        else if(CheckBox.class.isAssignableFrom(type))
-            return new AWTCheckBox(this);
-        else if(ComboBox.class.isAssignableFrom(type))
-            return new AWTComboBox(this);
-        else if(Body.class.isAssignableFrom(type))
-            return new AWTBody(this);
+    protected void populate(Population population) {
+        population.add(Label.class, new Creator<Label>() {
+            public Label create() {
+                return new AWTLabel(AWTPlatform.this);
+            }
+        });
         
-        throw new RenderTargetNotSupportedException();
-    }
-
-    @Override
-    public Widget parse(StreamReader processor) throws PlatformException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        population.add(Button.class, new Creator<Button>() {
+            public Button create() {
+                return new AWTButton(AWTPlatform.this);
+            }
+        });
+        population.add(CheckBox.class, new Creator<CheckBox>() {
+            public CheckBox create() {
+                return new AWTCheckBox(AWTPlatform.this);
+            }
+        });
+        population.add(ComboBox.class, new Creator<ComboBox>() {
+            public ComboBox create() {
+                return new AWTComboBox(AWTPlatform.this);
+            }
+        });
+        
+        population.add(Container.class, new Creator<Container>() {
+            public Container create() {
+                return new AWTContainer(AWTPlatform.this);
+            }
+        });
+        population.add(Body.class, new Creator<Body>() {
+            public Body create() {
+                return new AWTBody(AWTPlatform.this);
+            }
+        });
     }
 
     @Override

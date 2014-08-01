@@ -13,13 +13,14 @@ import javax.swing.JToggleButton;
 import net.nexustools.gui.AbstractAction;
 import net.nexustools.gui.ActivateableAction;
 import net.nexustools.gui.Button;
+import net.nexustools.gui.ToggleButton;
 import net.nexustools.gui.provider.swing.impl.ToggleButtonImpl;
 
 /**
  *
  * @author katelyn
  */
-public class SwingToggleButton extends ToggleButtonImpl<JToggleButton> implements Button {
+public class SwingToggleButton extends ToggleButtonImpl<JToggleButton> implements ToggleButton {
     
     private class NativeButton extends JToggleButton {
         

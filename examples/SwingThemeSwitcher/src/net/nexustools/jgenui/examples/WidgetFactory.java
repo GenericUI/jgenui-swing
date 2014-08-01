@@ -6,17 +6,23 @@
 
 package net.nexustools.jgenui.examples;
 
+import net.nexustools.gui.Body;
 import net.nexustools.gui.ComboBox;
+import net.nexustools.gui.event.ActionListener;
 import net.nexustools.gui.geom.Size;
 import net.nexustools.gui.layout.BoxLayout;
 import net.nexustools.gui.platform.PlatformUtils;
+import net.nexustools.gui.provider.awt.AWTButton;
+import net.nexustools.gui.provider.awt.AWTCanvas;
 import net.nexustools.gui.provider.swing.SwingBody;
+import net.nexustools.gui.provider.swing.SwingButton;
 import net.nexustools.gui.provider.swing.SwingCheckBox;
 import net.nexustools.gui.provider.swing.SwingComboBox;
 import net.nexustools.gui.provider.swing.SwingContainer;
 import net.nexustools.gui.provider.swing.SwingFrame;
 import net.nexustools.gui.provider.swing.SwingLabel;
 import net.nexustools.gui.provider.swing.SwingOnOffButton;
+import net.nexustools.gui.provider.swing.SwingPlatform;
 import net.nexustools.gui.provider.swing.SwingProgressBar;
 import net.nexustools.gui.provider.swing.SwingRadioButton;
 import net.nexustools.gui.provider.swing.SwingRangeInput;
@@ -33,11 +39,41 @@ public class WidgetFactory extends SwingBody {
     public static final String[] stargateNames = new String[]{"Teal'c", "Daniel", "Jack", "Samantha"};
     
     public static void main(String[] args) {
-        (new WidgetFactory()).show();
+        final SwingBody swingBody = new SwingBody("Select Platform");
+        swingBody.setLayout(BoxLayout.Vertical);
+        
+        swingBody.add(new SwingLabel("Select a Platform to Test."));
+        SwingContainer hor = new SwingContainer(BoxLayout.Horizontal);
+        hor.add(new SwingButton("Swing") {
+            {
+                addActionListener(new ActionListener() {
+                    @Override
+                    public void activated(ActionListener.ActionEvent event) {
+                        swingBody.hide();
+                        (new WidgetFactory()).show();
+                        //((Body)platform().parse("resource:/net/nexustools/jgenui/examples/body.xml")).show();
+                    }
+                });
+            }
+        });
+        hor.add(new AWTButton("AWT") {
+            {
+                /*addActionListener(new ActionListener() {
+                    @Override
+                    public void activated(ActionListener.ActionEvent event) {
+                        swingBody.hide();
+                        ((Body)platform().parse("resource:/net/nexustools/jgenui/examples/body.xml")).show();
+                    }
+                });*/
+            }
+        });
+        swingBody.add(hor);
+        swingBody.show();
+        //(new WidgetFactory()).show();
     }
 
     public WidgetFactory() {
-        super("Swing Theme Tester");
+        super("Widget Factory");
         setLayout(BoxLayout.Vertical);
         
         SwingContainer columns = new SwingContainer(BoxLayout.Horizontal);
@@ -196,8 +232,15 @@ public class WidgetFactory extends SwingBody {
         // End Fifth Column
         add(columns);
         
+        // Canvas Block
+        SwingFrame frame = new SwingFrame("Canvas", BoxLayout.Horizontal);
+        AWTCanvas swingCanvas = new AWTCanvas();
+        frame.add(swingCanvas);
+        add(frame);
+        // End Last Block
+        
         // Last Block
-        SwingFrame frame = new SwingFrame("Tabbed Widgets", BoxLayout.Horizontal);
+        frame = new SwingFrame("Tabbed Widgets", BoxLayout.Horizontal);
         SwingTabWidget tabWidget = new SwingTabWidget();
         tabWidget.add(new SwingLabel("Test"), "Farmers");
         tabWidget.add(new SwingLabel("Test"), "Seekers");

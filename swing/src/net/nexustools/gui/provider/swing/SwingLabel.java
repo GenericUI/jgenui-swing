@@ -20,17 +20,17 @@ import net.nexustools.gui.Label;
 public class SwingLabel extends AWTWidgetImpl<JLabel> implements Label {
 
     public SwingLabel() {
-        this(AWTPlatform.instance());
+        this(SwingPlatform.instance());
     }
     public SwingLabel(String text) {
         this();
         setText(text);
     }
-    SwingLabel(Label other, AWTPlatform platform) {
+    SwingLabel(Label other, SwingPlatform platform) {
         this();
         inherit(other);
     }
-    SwingLabel(AWTPlatform platform) {
+    SwingLabel(SwingPlatform platform) {
         super(platform);
     }
 

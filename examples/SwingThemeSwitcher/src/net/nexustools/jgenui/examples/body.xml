@@ -1,0 +1,25 @@
+<Body title="WidgetFactory" layout="VerticalBox">
+    <MenuBar>
+        <Menu title="WidgetFactory">
+            <Action onactivate="this.platform().quit()" />
+        </Menu>
+    </MenuBar>
+    <Layout type="HorizontalBox">
+        <Frame title="Fields and Toggles">
+            <ComboBox editable="true">
+                <!-- include "names.xml" -->
+            </ComboBox>
+            <ComboBox editable="true" enabled="false">
+                <!-- include "names.xml" -->
+            </ComboBox>
+            <TextInput />
+            <TextInput enabled="false" />
+            <Layout type="HorizontalBox">
+                <Label text="Label" />
+                <Label text="Label" enabled="false" />
+                <RangeInput />
+                <RangeInput enabled="false" />
+            </Layout>
+        </Frame>
+    </Layout>
+</Body>
