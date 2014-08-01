@@ -1,0 +1,3 @@
+[submodule "libs/jgenui"]
+	path = libs/jgenui
+	url = https://github.com/GenericUI/jgenui.git

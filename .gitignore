@@ -1,0 +1,17 @@
+# GEdit
+*~
+
+# AWT
+/awt/nbproject/private/
+/awt/build/
+/awt/dist/
+
+# Swing
+/swing/nbproject/private/
+/swing/build/
+/swing/dist/
+
+# Examples
+/examples/SwingThemeSwitcher/nbproject/private/
+/examples/SwingThemeSwitcher/build/
+/examples/SwingThemeSwitcher/dist/
