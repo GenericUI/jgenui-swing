@@ -5,8 +5,6 @@
  */
 package net.nexustools.gui.provider.swing;
 
-import net.nexustools.gui.provider.awt.AWTPlatform;
-import net.nexustools.gui.provider.awt.AWTComboBox;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ItemEvent;
@@ -34,7 +32,7 @@ public class SwingComboBox<I> extends AWTWidgetImpl<JComboBox> implements ComboB
         super(swingPlatform);
     }
     public SwingComboBox() {
-        super(AWTPlatform.instance());
+        super(SwingPlatform.instance());
     }
     public SwingComboBox(I[] options) {
         this();

@@ -6,9 +6,7 @@
 
 package net.nexustools.jgenui.examples;
 
-import net.nexustools.event.ValueListener;
 import net.nexustools.gui.ComboBox;
-import net.nexustools.gui.SingleInput;
 import net.nexustools.gui.geom.Size;
 import net.nexustools.gui.layout.BoxLayout;
 import net.nexustools.gui.platform.PlatformUtils;

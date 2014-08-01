@@ -163,17 +163,11 @@ public class AWTPlatform extends Platform<java.awt.Component> {
     }
 
     @Override
-    public String[] LAFs() {
-        String[] cssLAFs = cssLAFs();
-        String[] styles = new String[cssLAFs.length+1];
-        styles[0] = "AWT";
-        for(int i=0; i<cssLAFs.length; i++)
-            styles[1+i] = cssLAFs[i];
-        return styles;
+    public String[] LAFs0() {
+        return new String[]{"AWT"};
     }
     
-    @Override
-    public void setLAF(final String laf) {
+    protected void setLAF0(final String laf) {
         if(laf.equals("AWT"))
             setStyleSheet(null);
         else
