@@ -7,7 +7,6 @@
 package net.nexustools.gui.provider.swing;
 
 import java.awt.Window;
-import java.lang.reflect.InvocationTargetException;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -15,11 +14,15 @@ import net.nexustools.concurrent.IfWriteReader;
 import net.nexustools.concurrent.Prop;
 import net.nexustools.concurrent.PropAccessor;
 import net.nexustools.gui.Body;
+import net.nexustools.gui.Button;
+import net.nexustools.gui.Container;
 import net.nexustools.gui.Label;
 import net.nexustools.gui.platform.Platform;
 import net.nexustools.gui.platform.Platform.BaseRegistry;
 import net.nexustools.gui.provider.awt.AWTPlatform;
 import net.nexustools.gui.wrap.WrappedBody;
+import net.nexustools.gui.wrap.WrappedButton;
+import net.nexustools.gui.wrap.WrappedContainer;
 import net.nexustools.gui.wrap.WrappedLabel;
 import net.nexustools.utils.Creator;
 
@@ -31,14 +34,20 @@ public class SwingPlatform extends AWTPlatform {
     
     private static final Prop<String> currentLAF = new Prop();
     public static SwingPlatform instance() {
-        Platform currentPlatform = Platform.current();
-        if(currentPlatform instanceof SwingPlatform)
-            return (SwingPlatform)currentPlatform; // Good Enough
+        return instance(true);
+    }
+    
+    public static SwingPlatform instance(boolean exactMatch) {
+        if(!exactMatch) {
+            Platform currentPlatform = Platform.current();
+            if(currentPlatform instanceof SwingPlatform)
+                return (SwingPlatform)currentPlatform; // Good Enough
+        }
         return (SwingPlatform)Platform.byClass(SwingPlatform.class);
     }
     
     public SwingPlatform() {
-        super("swing");
+        super("Swing");
         setSystemLAF();
     }
     
@@ -61,18 +70,13 @@ public class SwingPlatform extends AWTPlatform {
                 return new WrappedLabel(using, SwingLabel.CREATOR);
             }
         });
-//        
-//        population.add(Button.class, new Creator<Button>() {
-//            public Button create() {
-//                return new SwingButton(SwingPlatform.this);
-//            }
-//        });
-//        population.add(ToggleButton.class, new Creator<ToggleButton>() {
-//            public ToggleButton create() {
-//                return new SwingToggleButton(SwingPlatform.this);
-//            }
-//        });
-//        
+        
+        population.add(Button.class, new Creator<Button, SwingPlatform>() {
+            public Button create(SwingPlatform using) {
+                return new WrappedButton(using, SwingButton.CREATOR);
+            }
+        });
+        
 //        population.add(RadioButton.class, new Creator<RadioButton>() {
 //            public RadioButton create() {
 //                return new SwingRadioButton(SwingPlatform.this);
@@ -94,18 +98,17 @@ public class SwingPlatform extends AWTPlatform {
 //                return new SwingMultiList(SwingPlatform.this);
 //            }
 //        });
-//        
-//        population.add(Container.class, new Creator<Container>() {
-//            public Container create() {
-//                return new SwingContainer(SwingPlatform.this);
-//            }
-//        });
+        
+        population.add(Container.class, new Creator<Container, SwingPlatform>() {
+            public Container create(SwingPlatform using) {
+                return new WrappedContainer(using, SwingContainer.CREATOR);
+            }
+        });
 //        population.add(Frame.class, new Creator<Frame>() {
 //            public Frame create() {
 //                return new SwingFrame(SwingPlatform.this);
 //            }
 //        });
-        
         population.add(Body.class, new Creator<Body, SwingPlatform>() {
             public Body create(SwingPlatform using) {
                 return new WrappedBody(using, SwingBody.CREATOR);

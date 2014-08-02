@@ -19,8 +19,10 @@ import net.nexustools.concurrent.BaseAccessor;
 import net.nexustools.concurrent.BaseReader;
 import net.nexustools.concurrent.BaseWriter;
 import net.nexustools.concurrent.FakeLock;
+import net.nexustools.gui.Button;
 import net.nexustools.gui.Label;
 import net.nexustools.gui.platform.Platform;
+import net.nexustools.gui.wrap.WrappedButton;
 import net.nexustools.gui.wrap.WrappedLabel;
 import net.nexustools.gui.wrap.WrappedPlatform;
 import net.nexustools.utils.Creator;
@@ -66,39 +68,38 @@ public class AWTPlatform extends WrappedPlatform<java.awt.Component> {
     protected static final AWTEventQueue eventQueue = new AWTEventQueue();
     
     public static AWTPlatform instance() {
-        Platform currentPlatform = Platform.current();
-        if(currentPlatform instanceof AWTPlatform)
-            return (AWTPlatform)currentPlatform; // Good Enough
+        return instance(true);
+    }
+    
+    public static AWTPlatform instance(boolean exactMatch) {
+        if(!exactMatch) {
+            Platform currentPlatform = Platform.current();
+            if(currentPlatform instanceof AWTPlatform)
+                return (AWTPlatform)currentPlatform; // Good Enough
+        }
         return (AWTPlatform)Platform.byClass(AWTPlatform.class);
     }
     
     protected AWTPlatform(String name) {
-        super("jgenui-" + name);
-        System.out.println("Creating `" + name + "` platform");
-        invokeLater(new Runnable() {
-            public void run() {
-                makeCurrent();
-            }
-        });
-        makeCurrent();
+        super(name);
     }
     public AWTPlatform() {
-        this("awt");
+        this("AWT");
     }
 
     @Override
     protected void populate(BaseRegistry population) {
         population.add(Label.class, new Creator<Label, AWTPlatform>() {
             public Label create(AWTPlatform using) {
-                return new WrappedLabel(AWTPlatform.this, AWTLabel.CREATOR);
+                return new WrappedLabel(using, AWTLabel.CREATOR);
             }
         });
-//        
-//        population.add(Button.class, new Creator<Button>() {
-//            public Button create() {
-//                return new AWTButton(AWTPlatform.this);
-//            }
-//        });
+        
+        population.add(Button.class, new Creator<Button, AWTPlatform>() {
+            public Button create(AWTPlatform using) {
+                return new WrappedButton(using, AWTButton.CREATOR);
+            }
+        });
 //        population.add(CheckBox.class, new Creator<CheckBox>() {
 //            public CheckBox create() {
 //                return new AWTCheckBox(AWTPlatform.this);

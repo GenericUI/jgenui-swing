@@ -6,15 +6,10 @@
 
 package net.nexustools.gui.provider.swing;
 
+import java.awt.Container;
 import javax.swing.JFrame;
-import net.nexustools.gui.geom.Point;
-import net.nexustools.gui.geom.Shape;
-import net.nexustools.gui.geom.Size;
-import net.nexustools.gui.layout.SizeConstraints;
-import net.nexustools.gui.provider.awt.AWTContainer;
-import net.nexustools.gui.provider.awt.AWTWidget;
+import net.nexustools.gui.provider.awt.AWTAbstractContainer;
 import net.nexustools.gui.wrap.NativeBody;
-import net.nexustools.gui.wrap.NativeWidget;
 import net.nexustools.gui.wrap.WrappedBody;
 import net.nexustools.gui.wrap.WrappedWidget;
 import net.nexustools.utils.Creator;
@@ -23,7 +18,7 @@ import net.nexustools.utils.Creator;
  *
  * @author katelyn
  */
-public class SwingBody extends AWTContainer<JFrame> implements NativeBody {
+public class SwingBody extends AWTAbstractContainer<JFrame> implements NativeBody {
 
     public static Creator<NativeBody, WrappedBody> CREATOR = new Creator<NativeBody, WrappedBody>() {
         public NativeBody create(WrappedBody body) {
@@ -32,11 +27,21 @@ public class SwingBody extends AWTContainer<JFrame> implements NativeBody {
     };
     
     public SwingBody(WrappedWidget wrap) {
-        super(new JFrame(), wrap);
+        super(new JFrame() {
+            {
+                setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                setLayout(null);
+            }
+        }, wrap);
     }
 
     public void nativeSetTitle(String title) {
         _c().setTitle(title);
+    }
+
+    @Override
+    public Container _t() {
+        return _c().getContentPane();
     }
     
 }
