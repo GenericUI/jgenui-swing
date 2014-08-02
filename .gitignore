@@ -1,6 +1,9 @@
 # GEdit
 *~
 
+# Crash Logs
+hs_err_pid*.log
+
 # AWT
 /awt/nbproject/private/
 /awt/build/
