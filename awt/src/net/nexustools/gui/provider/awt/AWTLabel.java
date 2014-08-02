@@ -6,52 +6,28 @@
 
 package net.nexustools.gui.provider.awt;
 
-import net.nexustools.gui.provider.awt.impl.AWTWidgetImpl;
-import net.nexustools.gui.Label;
-import java.awt.Graphics;
+import java.awt.Label;
+import net.nexustools.gui.wrap.NativeLabel;
+import net.nexustools.gui.wrap.WrappedLabel;
+import net.nexustools.utils.Creator;
 
 /**
  *
  * @author katelyn
  */
-public class AWTLabel extends AWTWidgetImpl<java.awt.Label> implements Label {
+public class AWTLabel extends AWTWidget<Label> implements NativeLabel {
 
-    public AWTLabel() {
-        this(AWTPlatform.instance());
-    }
-    public AWTLabel(String text) {
-        this();
-        setText(text);
-    }
-    AWTLabel(Label other, AWTPlatform platform) {
-        this();
-        inherit(other);
-    }
-    AWTLabel(AWTPlatform platform) {
-        super(platform);
+    public static Creator<NativeLabel, WrappedLabel> CREATOR = new Creator<NativeLabel, WrappedLabel>() {
+        public NativeLabel create(WrappedLabel label) {
+            return new AWTLabel(label);
+        }
+    };
+
+    public AWTLabel(WrappedLabel wrap) {
+        super(new Label(), wrap);
     }
 
-    @Override
-    protected java.awt.Label create() {
-        return new java.awt.Label() {
-            {
-                setName("Label");
-            }
-            @Override
-            public void paint(Graphics g) {
-                if(!customRender(g))
-                    super.paint(g);
-            }
-        };
-    }
-
-    @Override
-    public String text() {
-        return component.getText();
-    }
-
-    @Override
-    public void setText(String text) {
+    public void nativeSetText(String text) {
         component.setText(text);
     }
     

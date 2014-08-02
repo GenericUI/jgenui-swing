@@ -6,54 +6,35 @@
 
 package net.nexustools.gui.provider.awt;
 
-import java.awt.Dimension;
-import java.awt.Graphics;
-import net.nexustools.gui.Container;
-import net.nexustools.gui.layout.Layout;
-import net.nexustools.gui.platform.WidgetPeer;
-import net.nexustools.gui.provider.awt.impl.ContainerImpl;
+import java.awt.Container;
+import net.nexustools.gui.wrap.NativeContainer;
+import net.nexustools.gui.wrap.NativeWidget;
+import net.nexustools.gui.wrap.WrappedWidget;
 
 /**
  *
  * @author katelyn
  */
-public class AWTContainer extends ContainerImpl<java.awt.Container> implements net.nexustools.gui.Container {
+public class AWTContainer<C extends Container> extends AWTWidget<C> implements NativeContainer {
 
-    public class NativeContainer extends java.awt.Container implements WidgetPeer<Container> {
+    protected AWTContainer(C container, WrappedWidget wrap) {
+        super(container, wrap);
+    }
+    public AWTContainer(WrappedWidget wrap) {
+        this((C)new Container(), wrap);
+    }
 
-        public NativeContainer() { // For consistency, buttons can expand infinitely by default
-            setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
-            setName("Container");
-            setLayout(null);
-        }
-        
-        @Override
-        public void paint(Graphics g) {
-            if(!customRender(g))
-                super.paint(g);
-        }
-        
-        @Override
-        public Container genUI() {
-            return AWTContainer.this;
-        }
-        
+    public void nativeAdd(NativeWidget nativeWidget) {
+        _c().add(((AWTWidget)nativeWidget)._c());
+    }
+
+    public void nativeRemove(NativeWidget nativeWidget) {
+        _c().remove(((AWTWidget)nativeWidget)._c());
+    }
+
+    public void nativeReplace(NativeWidget what, NativeWidget with) {
+        nativeRemove(what);
+        nativeAdd(with);
     }
     
-    AWTContainer(AWTPlatform platform) {
-        super(platform);
-    }
-    public AWTContainer() {
-        this(AWTPlatform.instance());
-    }
-    public AWTContainer(Layout layout) {
-        this();
-        setLayout(layout);
-    }
-
-    @Override
-    protected java.awt.Container create() {
-        return new NativeContainer();
-    }
-
 }

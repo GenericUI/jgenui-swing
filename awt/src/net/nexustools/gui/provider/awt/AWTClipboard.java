@@ -14,7 +14,7 @@ import net.nexustools.gui.platform.MimeStorage;
  *
  * @author katelyn
  */
-public class AWTClipboard implements Clipboard {
+class AWTClipboard implements Clipboard {
 
     private static final AWTClipboard clipboard = new AWTClipboard();
     public static AWTClipboard instance() {
@@ -28,14 +28,6 @@ public class AWTClipboard implements Clipboard {
     public void setContent(MimeStorage data) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
-    public String string() {
-        return content().string();
-    }
-    
-    public double number() {
-        return content().number();
-    }
 
     public void addListener(ValueListener<MimeStorage, Clipboard> valueListener) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -45,7 +37,15 @@ public class AWTClipboard implements Clipboard {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    public String string() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
     public void setString(String string) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public double number() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -54,7 +54,7 @@ public class AWTClipboard implements Clipboard {
     }
 
     public Object get(String mime) {
-        return content().get(mime);
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     public void put(String mime, Object data) {

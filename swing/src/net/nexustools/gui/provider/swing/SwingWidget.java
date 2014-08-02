@@ -4,12 +4,12 @@
  * and open the template in the editor.
  */
 
-package net.nexustools.gui.provider.awt;
+package net.nexustools.gui.provider.swing;
 
 /**
  *
  * @author katelyn
  */
-public class AWTColorSelector {
+public class SwingWidget {
     
 }

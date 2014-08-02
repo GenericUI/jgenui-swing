@@ -6,56 +6,34 @@
 
 package net.nexustools.gui.provider.swing;
 
-import net.nexustools.gui.provider.awt.AWTPlatform;
-import net.nexustools.gui.provider.awt.impl.AWTWidgetImpl;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import javax.swing.JLabel;
-import net.nexustools.gui.Label;
+import net.nexustools.gui.geom.Point;
+import net.nexustools.gui.geom.Shape;
+import net.nexustools.gui.geom.Size;
+import net.nexustools.gui.layout.SizeConstraints;
+import net.nexustools.gui.provider.awt.AWTWidget;
+import net.nexustools.gui.wrap.NativeLabel;
+import net.nexustools.gui.wrap.WrappedLabel;
+import net.nexustools.utils.Creator;
 
 /**
  *
  * @author katelyn
  */
-public class SwingLabel extends AWTWidgetImpl<JLabel> implements Label {
+public class SwingLabel extends AWTWidget<JLabel> implements NativeLabel {
 
-    public SwingLabel() {
-        this(SwingPlatform.instance());
+    public static Creator<NativeLabel, WrappedLabel> CREATOR = new Creator<NativeLabel, WrappedLabel>() {
+        public NativeLabel create(WrappedLabel label) {
+            return new SwingLabel(label);
+        }
+    };
+    
+    protected SwingLabel(WrappedLabel label) {
+        super(new JLabel(), label);
     }
-    public SwingLabel(String text) {
-        this();
-        setText(text);
-    }
-    SwingLabel(Label other, SwingPlatform platform) {
-        this();
-        inherit(other);
-    }
-    SwingLabel(SwingPlatform platform) {
-        super(platform);
-    }
-
-    @Override
-    protected JLabel create() {
-        return new JLabel() {
-            {
-                setName("Label");
-            }
-            @Override
-            public void paint(Graphics g) {
-                if(!customRender((Graphics2D)g))
-                    super.paint(g);
-            }
-        };
-    }
-
-    @Override
-    public String text() {
-        return component.getText();
-    }
-
-    @Override
-    public void setText(String text) {
-        component.setText(text);
+    
+    public void nativeSetText(String text) {
+        _c().setText(text);
     }
     
 }

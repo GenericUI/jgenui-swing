@@ -15,17 +15,12 @@ import net.nexustools.concurrent.IfWriteReader;
 import net.nexustools.concurrent.Prop;
 import net.nexustools.concurrent.PropAccessor;
 import net.nexustools.gui.Body;
-import net.nexustools.gui.Button;
-import net.nexustools.gui.CheckBox;
-import net.nexustools.gui.ComboBox;
-import net.nexustools.gui.Container;
-import net.nexustools.gui.Frame;
 import net.nexustools.gui.Label;
-import net.nexustools.gui.MultiList;
-import net.nexustools.gui.RadioButton;
-import net.nexustools.gui.ToggleButton;
 import net.nexustools.gui.platform.Platform;
+import net.nexustools.gui.platform.Platform.BaseRegistry;
 import net.nexustools.gui.provider.awt.AWTPlatform;
+import net.nexustools.gui.wrap.WrappedBody;
+import net.nexustools.gui.wrap.WrappedLabel;
 import net.nexustools.utils.Creator;
 
 /**
@@ -58,74 +53,76 @@ public class SwingPlatform extends AWTPlatform {
     }
 
     @Override
-    protected void populate(Population population) {
+    protected void populate(BaseRegistry population) {
         super.populate(population); // Inherit AWT
         
-        population.add(Label.class, new Creator<Label>() {
-            public Label create() {
-                return new SwingLabel(SwingPlatform.this);
+        population.add(Label.class, new Creator<Label, SwingPlatform>() {
+            public Label create(SwingPlatform using) {
+                return new WrappedLabel(using, SwingLabel.CREATOR);
             }
         });
+//        
+//        population.add(Button.class, new Creator<Button>() {
+//            public Button create() {
+//                return new SwingButton(SwingPlatform.this);
+//            }
+//        });
+//        population.add(ToggleButton.class, new Creator<ToggleButton>() {
+//            public ToggleButton create() {
+//                return new SwingToggleButton(SwingPlatform.this);
+//            }
+//        });
+//        
+//        population.add(RadioButton.class, new Creator<RadioButton>() {
+//            public RadioButton create() {
+//                return new SwingRadioButton(SwingPlatform.this);
+//            }
+//        });
+//        population.add(CheckBox.class, new Creator<CheckBox>() {
+//            public CheckBox create() {
+//                return new SwingCheckBox(SwingPlatform.this);
+//            }
+//        });
+//        
+//        population.add(ComboBox.class, new Creator<ComboBox>() {
+//            public ComboBox create() {
+//                return new SwingComboBox(SwingPlatform.this);
+//            }
+//        });
+//        population.add(MultiList.class, new Creator<MultiList>() {
+//            public MultiList create() {
+//                return new SwingMultiList(SwingPlatform.this);
+//            }
+//        });
+//        
+//        population.add(Container.class, new Creator<Container>() {
+//            public Container create() {
+//                return new SwingContainer(SwingPlatform.this);
+//            }
+//        });
+//        population.add(Frame.class, new Creator<Frame>() {
+//            public Frame create() {
+//                return new SwingFrame(SwingPlatform.this);
+//            }
+//        });
         
-        population.add(Button.class, new Creator<Button>() {
-            public Button create() {
-                return new SwingButton(SwingPlatform.this);
+        population.add(Body.class, new Creator<Body, SwingPlatform>() {
+            public Body create(SwingPlatform using) {
+                return new WrappedBody(using, SwingBody.CREATOR);
             }
         });
-        population.add(ToggleButton.class, new Creator<ToggleButton>() {
-            public ToggleButton create() {
-                return new SwingToggleButton(SwingPlatform.this);
-            }
-        });
-        
-        population.add(RadioButton.class, new Creator<RadioButton>() {
-            public RadioButton create() {
-                return new SwingRadioButton(SwingPlatform.this);
-            }
-        });
-        population.add(CheckBox.class, new Creator<CheckBox>() {
-            public CheckBox create() {
-                return new SwingCheckBox(SwingPlatform.this);
-            }
-        });
-        
-        population.add(ComboBox.class, new Creator<ComboBox>() {
-            public ComboBox create() {
-                return new SwingComboBox(SwingPlatform.this);
-            }
-        });
-        population.add(MultiList.class, new Creator<MultiList>() {
-            public MultiList create() {
-                return new SwingMultiList(SwingPlatform.this);
-            }
-        });
-        
-        population.add(Container.class, new Creator<Container>() {
-            public Container create() {
-                return new SwingContainer(SwingPlatform.this);
-            }
-        });
-        population.add(Frame.class, new Creator<Frame>() {
-            public Frame create() {
-                return new SwingFrame(SwingPlatform.this);
-            }
-        });
-        population.add(Body.class, new Creator<Body>() {
-            public Body create() {
-                return new SwingBody(SwingPlatform.this);
-            }
-        });
+        //population.add(Body.class, SwingBody.CREATOR);
     }
 
-    @Override
-    public String[] LAFs0() {
-        UIManager.LookAndFeelInfo[] lookAndFeels = UIManager.getInstalledLookAndFeels();
-        String[] styles = new String[lookAndFeels.length];
-        for(int i=0; i<lookAndFeels.length; i++) {
-            styles[i] = lookAndFeels[i].getName();
-        }
-        return styles;
-    }
+//    @Override
+//    public String[] LAFs0() {
+//        UIManager.LookAndFeelInfo[] lookAndFeels = UIManager.getInstalledLookAndFeels();
+//        String[] styles = new String[lookAndFeels.length];
+//        for(int i=0; i<lookAndFeels.length; i++) {
+//            styles[i] = lookAndFeels[i].getName();
+//        }
+//        return styles;
+//    }
     
     private static final Prop<String> lafClassName = new Prop();
     protected static boolean setLAFClass(final String className) {
@@ -161,36 +158,36 @@ public class SwingPlatform extends AWTPlatform {
         });
     }
     
-    @Override
-    public void setLAF0(final String laf) {
-        try {
-            currentLAF.set(laf);
-            act(new Runnable() {
-                @Override
-                public void run() {
-                    boolean foundLAF = false;
-                    UIManager.LookAndFeelInfo[] lookAndFeels = UIManager.getInstalledLookAndFeels();
-                    for(int i=0; i<lookAndFeels.length; i++) {
-                        if(lookAndFeels[i].getName().equals(laf) && setLAFClass(lookAndFeels[i].getClassName())) {
-                            foundLAF = true;
-                            break;
-                        }
-                    }
-                    if(!foundLAF) {
-                        setSystemLAF();
-                        SwingPlatform.super.setLAF0(laf);
-                    } else
-                        setStyleSheet(null);
-                }
-            });
-        } catch (InvocationTargetException ex) {
-            ex.getCause().printStackTrace();
-        }  
-    }
-
-    @Override
-    public String LAF() {
-        return currentLAF.get();
-    }
+//    @Override
+//    public void setLAF0(final String laf) {
+//        try {
+//            currentLAF.set(laf);
+//            act(new Runnable() {
+//                @Override
+//                public void run() {
+//                    boolean foundLAF = false;
+//                    UIManager.LookAndFeelInfo[] lookAndFeels = UIManager.getInstalledLookAndFeels();
+//                    for(int i=0; i<lookAndFeels.length; i++) {
+//                        if(lookAndFeels[i].getName().equals(laf) && setLAFClass(lookAndFeels[i].getClassName())) {
+//                            foundLAF = true;
+//                            break;
+//                        }
+//                    }
+//                    if(!foundLAF) {
+//                        setSystemLAF();
+//                        SwingPlatform.super.setLAF0(laf);
+//                    } else
+//                        setStyleSheet(null);
+//                }
+//            });
+//        } catch (InvocationTargetException ex) {
+//            ex.getCause().printStackTrace();
+//        }  
+//    }
+//
+//    @Override
+//    public String LAF() {
+//        return currentLAF.get();
+//    }
     
 }
