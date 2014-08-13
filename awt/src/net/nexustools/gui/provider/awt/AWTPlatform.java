@@ -13,31 +13,28 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.ListIterator;
 import net.nexustools.concurrent.BaseAccessor;
 import net.nexustools.concurrent.BaseReader;
 import net.nexustools.concurrent.BaseWriter;
 import net.nexustools.concurrent.FakeLock;
-import net.nexustools.gui.Button;
-import net.nexustools.gui.Label;
-import net.nexustools.gui.platform.Platform;
-import net.nexustools.gui.wrap.WrappedButton;
-import net.nexustools.gui.wrap.WrappedLabel;
-import net.nexustools.gui.wrap.WrappedPlatform;
-import net.nexustools.utils.Creator;
+import net.nexustools.concurrent.PropList;
+import net.nexustools.gui.platform.Clipboard;
+import net.nexustools.gui.platform.GUIPlatform;
+import net.nexustools.gui.wrap.WPlatform;
 
 /**
  *
  * @author katelyn
  */
-public class AWTPlatform extends WrappedPlatform<java.awt.Component> {
+public class AWTPlatform extends WPlatform {
     
     static abstract class RunnableReader<R> implements Runnable {
         public R value;
     }
     public static class AWTEventQueue extends EventQueue {
-        private final ArrayList<Runnable> idleEvents = new ArrayList();
+        private final PropList<Runnable> idleEvents = new PropList();
         
         @Override
         protected void dispatchEvent(AWTEvent event) {
@@ -47,7 +44,8 @@ public class AWTPlatform extends WrappedPlatform<java.awt.Component> {
         
         public void testIdle() {
             if (peekEvent() == null) {
-                ListIterator<Runnable> li = idleEvents.listIterator(idleEvents.size());
+                List<Runnable> taken = idleEvents.take();
+                ListIterator<Runnable> li = taken.listIterator(taken.size());
 
                 while(li.hasPrevious()) {
                     try {
@@ -61,8 +59,12 @@ public class AWTPlatform extends WrappedPlatform<java.awt.Component> {
         }
 
         private void onIdle(final Runnable run) {
-            idleEvents.add(run);
-            testIdle();
+            idleEvents.push(run);
+            invokeLater(new Runnable() {
+                public void run() {
+                    testIdle();
+                }
+            });
         }
     }
     protected static final AWTEventQueue eventQueue = new AWTEventQueue();
@@ -73,11 +75,11 @@ public class AWTPlatform extends WrappedPlatform<java.awt.Component> {
     
     public static AWTPlatform instance(boolean exactMatch) {
         if(!exactMatch) {
-            Platform currentPlatform = Platform.current();
+            GUIPlatform currentPlatform = GUIPlatform.current();
             if(currentPlatform instanceof AWTPlatform)
                 return (AWTPlatform)currentPlatform; // Good Enough
         }
-        return (AWTPlatform)Platform.byClass(AWTPlatform.class);
+        return (AWTPlatform)GUIPlatform.byClass(AWTPlatform.class);
     }
     
     protected AWTPlatform(String name) {
@@ -86,62 +88,10 @@ public class AWTPlatform extends WrappedPlatform<java.awt.Component> {
     public AWTPlatform() {
         this("AWT");
     }
-
-    @Override
-    protected void populate(BaseRegistry population) {
-        population.add(Label.class, new Creator<Label, AWTPlatform>() {
-            public Label create(AWTPlatform using) {
-                return new WrappedLabel(using, AWTLabel.CREATOR);
-            }
-        });
-        
-        population.add(Button.class, new Creator<Button, AWTPlatform>() {
-            public Button create(AWTPlatform using) {
-                return new WrappedButton(using, AWTButton.CREATOR);
-            }
-        });
-//        population.add(CheckBox.class, new Creator<CheckBox>() {
-//            public CheckBox create() {
-//                return new AWTCheckBox(AWTPlatform.this);
-//            }
-//        });
-//        population.add(ComboBox.class, new Creator<ComboBox>() {
-//            public ComboBox create() {
-//                return new AWTComboBox(AWTPlatform.this);
-//            }
-//        });
-//        
-//        population.add(Container.class, new Creator<Container>() {
-//            public Container create() {
-//                return new AWTContainer(AWTPlatform.this);
-//            }
-//        });
-//        population.add(Body.class, new Creator<Body>() {
-//            public Body create() {
-//                return new WrappedBody(new AWTBody(AWTPlatform.this));
-//            }
-//        });
-    }
-
+    
     @Override
     public boolean supports(Feature feature) {
-        switch(feature) {
-            case MultipleBodies:
-            case ComplexDrawing:
-            case FullPainter:
-                return true;
-        }
         return false;
-    }
-
-    @Override
-    public void onIdle(final Runnable run) {
-        invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                eventQueue.onIdle(run);
-            }
-        });
     }
 
     @Override
@@ -166,8 +116,8 @@ public class AWTPlatform extends WrappedPlatform<java.awt.Component> {
     }
 
     @Override
-    public AWTClipboard clipboard() {
-        return AWTClipboard.instance();
+    public Clipboard clipboard() {
+        return null;
     }
 
     public void write(final BaseAccessor data, final BaseWriter actor) {
@@ -188,24 +138,8 @@ public class AWTPlatform extends WrappedPlatform<java.awt.Component> {
         return swingReader.value;
     }
 
-    public final void invokeLater(Runnable run) {
-        invokeLater(run, QueuePlacement.AtBack);
-    }
-    
     @Override
-    public final void invokeLater(Runnable run, QueuePlacement placement) {
-        switch(placement) {
-            case AtBack:
-                EventQueue.invokeLater(run);
-                break;
-                
-            default:
-                throw new UnsupportedOperationException();
-        }
-    }
-
-    @Override
-    public final void invokeAndWait(Runnable run) {
+    protected void invokeAndWaitImpl(Runnable run) {
         if(EventQueue.isDispatchThread())
             run.run();
         else
@@ -218,6 +152,21 @@ public class AWTPlatform extends WrappedPlatform<java.awt.Component> {
                     ex.printStackTrace();
                     break;
                 }
+    }
+
+    @Override
+    protected void invokeOnIdleImpl(Runnable run) {
+        eventQueue.onIdle(run);
+    }
+
+    @Override
+    protected void invokeLaterImpl(Runnable run) {
+        EventQueue.invokeLater(run);
+    }
+
+    @Override
+    protected void populate(WidgetRegistry baseRegistry) {
+        
     }
     
 }

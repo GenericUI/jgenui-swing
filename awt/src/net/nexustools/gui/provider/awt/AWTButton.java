@@ -7,36 +7,41 @@
 package net.nexustools.gui.provider.awt;
 
 import java.awt.Button;
-import net.nexustools.gui.wrap.NativeButton;
-import net.nexustools.gui.wrap.WrappedButton;
-import net.nexustools.utils.Creator;
+import java.awt.Component;
+import net.nexustools.gui.impl.Image;
+import net.nexustools.gui.provider.awt.AWTButton.NAButton;
+import net.nexustools.gui.provider.awt.AWTLabel.NALabel;
+import net.nexustools.gui.wrap.WButton;
+import net.nexustools.gui.wrap.WPlatform;
+import net.nexustools.gui.wrap.impl.NButton;
 
 /**
  *
  * @author katelyn
  */
-public class AWTButton extends AWTActivateableWidget<Button> implements NativeButton {
+public class AWTButton<N extends NAButton> extends WButton<N> {
 
-    public static Creator<NativeButton, WrappedButton> CREATOR = new Creator<NativeButton, WrappedButton>() {
-        public NativeButton create(WrappedButton button) {
-            return new AWTButton(button);
-        }
-    };
+    protected AWTButton(String tag, WPlatform platform) {
+        super(tag, platform);
+    }
+    public AWTButton() {
+        super("Button", AWTPlatform.instance());
+    }
     
-    public AWTButton(WrappedButton wrap) {
-        super(new Button(), wrap);
+    public static abstract class NAButton<C extends Component, WW extends WButton> extends NALabel<C, WW> implements NButton<WW> {
+        public NAButton(C component) {
+            super(component);
+        }
     }
 
-    public void nativeSetText(String text) {
-        _c().setLabel(text);
-    }
-
-    public void nativeAddActivateListener() {
-        _c().addActionListener(actionListener);
-    }
-
-    public void nativeRemoveActivateListener() {
-        _c().removeActionListener(actionListener);
+    @Override
+    protected N createNative() {
+        return (N) new NAButton<Button, WButton>(new Button()) {
+            public void nativeSetText(String text) {
+                component.setLabel(text);
+            }
+            public void nativeSetIcon(Image icon) {}
+        };
     }
     
 }

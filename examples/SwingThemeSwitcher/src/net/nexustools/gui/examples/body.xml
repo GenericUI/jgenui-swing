@@ -1,16 +1,16 @@
 <Body title="WidgetFactory" layout="VerticalBox">
     <MenuBar>
         <Menu title="WidgetFactory">
-            <Action onactivate="this.platform().quit()" />
+            <Action onactivate="System.exit(0)" />
         </Menu>
     </MenuBar>
     <Layout type="HorizontalBox">
         <Frame title="Fields and Toggles">
             <ComboBox editable="true">
-                <!-- include "names.xml" -->
+                <?include "names.xml"?>
             </ComboBox>
             <ComboBox editable="true" enabled="false">
-                <!-- include "names.xml" -->
+                <?include "names.xml"?>
             </ComboBox>
             <TextInput />
             <TextInput enabled="false" />

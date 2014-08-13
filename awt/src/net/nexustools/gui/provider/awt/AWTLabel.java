@@ -6,29 +6,39 @@
 
 package net.nexustools.gui.provider.awt;
 
+import java.awt.Component;
 import java.awt.Label;
-import net.nexustools.gui.wrap.NativeLabel;
-import net.nexustools.gui.wrap.WrappedLabel;
-import net.nexustools.utils.Creator;
+import net.nexustools.gui.impl.Image;
+import net.nexustools.gui.provider.awt.AWTLabel.NALabel;
+import net.nexustools.gui.provider.awt.AWTWidget.NAComponent;
+import net.nexustools.gui.wrap.WLabel;
+import net.nexustools.gui.wrap.WPlatform;
+import net.nexustools.gui.wrap.impl.NLabel;
 
 /**
  *
  * @author katelyn
  */
-public class AWTLabel extends AWTWidget<Label> implements NativeLabel {
+public class AWTLabel<N extends NALabel> extends WLabel<N> {
 
-    public static Creator<NativeLabel, WrappedLabel> CREATOR = new Creator<NativeLabel, WrappedLabel>() {
-        public NativeLabel create(WrappedLabel label) {
-            return new AWTLabel(label);
+    public AWTLabel(String tag, WPlatform platform) {
+        super(tag, platform);
+    }
+    
+    public static abstract class NALabel<C extends Component, WW extends WLabel> extends NAComponent<C, WW> implements NLabel<WW> {
+        public NALabel(C component) {
+            super(component);
         }
-    };
-
-    public AWTLabel(WrappedLabel wrap) {
-        super(new Label(), wrap);
     }
 
-    public void nativeSetText(String text) {
-        component.setText(text);
+    @Override
+    protected N createNative() {
+        return (N) new NALabel<Label, WLabel>(new Label()) {
+            public void nativeSetText(String text) {
+                component.setText(text);
+            }
+            public void nativeSetIcon(Image icon) {}
+        };
     }
     
 }
