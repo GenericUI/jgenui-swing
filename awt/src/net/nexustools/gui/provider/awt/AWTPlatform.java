@@ -20,9 +20,13 @@ import net.nexustools.concurrent.BaseReader;
 import net.nexustools.concurrent.BaseWriter;
 import net.nexustools.concurrent.FakeLock;
 import net.nexustools.concurrent.PropList;
+import net.nexustools.gui.impl.Body;
+import net.nexustools.gui.impl.Button;
+import net.nexustools.gui.impl.Container;
 import net.nexustools.gui.platform.Clipboard;
 import net.nexustools.gui.platform.GUIPlatform;
 import net.nexustools.gui.wrap.WPlatform;
+import net.nexustools.utils.Creator;
 
 /**
  *
@@ -166,7 +170,21 @@ public class AWTPlatform extends WPlatform {
 
     @Override
     protected void populate(WidgetRegistry baseRegistry) {
-        
+        baseRegistry.add(Button.class, new Creator<Button, AWTPlatform>() {
+            public Button create(AWTPlatform using) {
+                return new AWTButton(using);
+            }
+        });
+        baseRegistry.add(Container.class, new Creator<Container, AWTPlatform>() {
+            public Container create(AWTPlatform using) {
+                return new AWTContainer(using);
+            }
+        });
+        baseRegistry.add(Body.class, new Creator<Body, AWTPlatform>() {
+            public Body create(AWTPlatform using) {
+                return new AWTBody(using);
+            }
+        });
     }
     
 }

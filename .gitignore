@@ -21,3 +21,4 @@ hs_err_pid*.log
 
 # Mac
 *.DS_Store
+/jgenui-swing/nbproject/private/

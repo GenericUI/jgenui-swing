@@ -48,6 +48,10 @@ public abstract class AWTAbstractContainer<N extends NAAbstractContainer> extend
             Insets insets = component.getInsets();
             return new Vec4f(insets.left, insets.top, insets.right, insets.bottom);
         }
+
+        public void nativeClearContent() {
+            component.removeAll();
+        }
         
     }
 

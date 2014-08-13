@@ -9,11 +9,11 @@ package net.nexustools.gui.provider.awt;
 import java.awt.Frame;
 import net.nexustools.gui.impl.Action;
 import net.nexustools.gui.provider.awt.AWTBody.NABody;
-import net.nexustools.gui.provider.awt.AWTContainer.NAContainer;
 import net.nexustools.gui.provider.awt.AWTWindow.NAWindow;
 import net.nexustools.gui.wrap.WBody;
 import net.nexustools.gui.wrap.WPlatform;
 import net.nexustools.gui.wrap.impl.NBody;
+import net.nexustools.gui.wrap.impl.NWidget;
 
 /**
  *
@@ -22,9 +22,12 @@ import net.nexustools.gui.wrap.impl.NBody;
 public class AWTBody<N extends NABody> extends WBody<N> {
 
     public AWTBody() {
-        this("Body", AWTPlatform.instance());
+        this(AWTPlatform.instance());
     }
-    protected AWTBody(String tag, WPlatform platform) {
+    protected AWTBody(AWTPlatform platform) {
+        this("Body", platform);
+    }
+    protected AWTBody(String tag, AWTPlatform platform) {
         super(tag, platform);
     }
     
@@ -43,15 +46,13 @@ public class AWTBody<N extends NABody> extends WBody<N> {
         public void nativeSetTitle(String title) {
             component.setTitle(title);
         }
+
+        public void nativeSetGlassWidget(NWidget glassWidget) {}
+        public void nativeSetTitleWidget(NWidget titleWidget) {}
+
+        public void nativeSetMainWidget(NWidget mainWidget) {
+        }
         
-    }
-
-    public void insertAction(Action action, Action after) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public void clearActions() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

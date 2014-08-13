@@ -8,6 +8,8 @@ package net.nexustools.gui.provider.awt;
 
 import java.awt.Button;
 import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import net.nexustools.gui.impl.Image;
 import net.nexustools.gui.provider.awt.AWTButton.NAButton;
 import net.nexustools.gui.provider.awt.AWTLabel.NALabel;
@@ -24,8 +26,11 @@ public class AWTButton<N extends NAButton> extends WButton<N> {
     protected AWTButton(String tag, WPlatform platform) {
         super(tag, platform);
     }
+    protected AWTButton(WPlatform platform) {
+        this("Button", platform);
+    }
     public AWTButton() {
-        super("Button", AWTPlatform.instance());
+        this(AWTPlatform.instance());
     }
     
     public static abstract class NAButton<C extends Component, WW extends WButton> extends NALabel<C, WW> implements NButton<WW> {
@@ -37,10 +42,30 @@ public class AWTButton<N extends NAButton> extends WButton<N> {
     @Override
     protected N createNative() {
         return (N) new NAButton<Button, WButton>(new Button()) {
+            ActionListener actionListener;
             public void nativeSetText(String text) {
                 component.setLabel(text);
             }
             public void nativeSetIcon(Image icon) {}
+
+            public void attachActionListener(final Runnable callback) {
+                if(actionListener != null)
+                    return;
+                
+                component.addActionListener(actionListener = new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        callback.run();
+                    }
+                });
+            }
+
+            public void detachActionListener() {
+                if(actionListener == null)
+                    return;
+                
+                component.removeActionListener(actionListener);
+                actionListener = null;
+            }
         };
     }
     

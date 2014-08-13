@@ -87,6 +87,14 @@ public abstract class AWTWidget<N extends NAComponent> extends WWidget<N> {
         public void nativeBindContextMenu(Menu contextMenu) {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
+
+        public void nativeRequestFocus() {
+            component.requestFocus();
+        }
+        
+        public C _c() {
+            return component;
+        }
         
     }
     

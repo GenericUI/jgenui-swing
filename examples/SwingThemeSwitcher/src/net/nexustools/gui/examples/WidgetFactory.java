@@ -11,8 +11,9 @@ package net.nexustools.gui.examples;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import net.nexustools.ApplicationDelegate;
-import net.nexustools.gui.provider.awt.AWTBody;
-import net.nexustools.gui.provider.awt.AWTButton;
+import net.nexustools.gui.event.ActionListener;
+import net.nexustools.gui.provider.swing.SwingBody;
+import net.nexustools.gui.provider.swing.SwingButton;
 
 
 /**
@@ -24,13 +25,19 @@ public class WidgetFactory {
     public static void main(String[] args) throws IOException, URISyntaxException {
         ApplicationDelegate.init("Pixel Galaxy", "NexusTools");
         
-        AWTBody body = new AWTBody();
+        SwingBody body = new SwingBody();
         body.setTitle("Test");
         
-        AWTButton button = new AWTButton();
+        final SwingButton button = new SwingButton();
         button.setText("Testing Button");
+        button.addActionListener(new ActionListener() {
+            int count = 1;
+            @Override
+            public void activated(ActionListener.ActionEvent event) {
+                button.setText("Click #" + (count++));
+            }
+        });
         body.add(button);
-        
         body.setVisible(true);
     }
     

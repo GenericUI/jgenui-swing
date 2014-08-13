@@ -30,11 +30,14 @@ public class AWTContainer<N extends NAContainer> extends WContainer<N> {
         
     }
 
-    protected AWTContainer(String tag, WPlatform platform) {
+    protected AWTContainer(String tag, AWTPlatform platform) {
         super(tag, platform);
     }
-    public AWTContainer(WPlatform platform) {
-        super("Container", platform);
+    protected AWTContainer(AWTPlatform platform) {
+        this("Container", platform);
+    }
+    public AWTContainer() {
+        this("Container", AWTPlatform.instance());
     }
 
     @Override
