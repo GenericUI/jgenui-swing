@@ -6,11 +6,8 @@
 
 package net.nexustools.gui.examples;
 
-//import net.nexustools.gui.impl.Body;
-
 import java.io.IOException;
 import java.net.URISyntaxException;
-import net.nexustools.ApplicationDelegate;
 import net.nexustools.gui.event.ActionListener;
 import net.nexustools.gui.provider.swing.SwingBody;
 import net.nexustools.gui.provider.swing.SwingButton;
@@ -23,10 +20,8 @@ import net.nexustools.gui.provider.swing.SwingButton;
 public class WidgetFactory {
     
     public static void main(String[] args) throws IOException, URISyntaxException {
-        ApplicationDelegate.init("Pixel Galaxy", "NexusTools");
-        
         SwingBody body = new SwingBody();
-        body.setTitle("Test");
+        body.setTitle("Widget Factory");
         
         final SwingButton button = new SwingButton();
         button.setText("Testing Button");

@@ -10,7 +10,7 @@ import java.awt.Window;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import net.nexustools.concurrent.IfWriteReader;
+import net.nexustools.concurrent.logic.IfWriteReader;
 import net.nexustools.concurrent.Prop;
 import net.nexustools.concurrent.PropAccessor;
 import net.nexustools.gui.impl.Body;
